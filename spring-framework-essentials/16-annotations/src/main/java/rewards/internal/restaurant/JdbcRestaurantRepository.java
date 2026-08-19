@@ -1,7 +1,9 @@
 package rewards.internal.restaurant;
 
 import common.money.Percentage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -13,17 +15,9 @@ import java.util.Map;
 
 /**
  * Loads restaurants from a data source using the JDBC API.
- *
+ * <p>
  * This implementation should cache restaurants to improve performance. The
  * cache should be populated on initialization and cleared on destruction.
- */
-
-/* TODO-06: Let this class to be found in component-scanning
- * - Annotate the class with an appropriate stereotype annotation
- *   to cause component-scanning to detect and load this bean.
- * - Inject dataSource. Use constructor injection in this case.
- *   Note that there are already two constructors, one of which
- *   is no-arg constructor.
  */
 
 /*
@@ -44,6 +38,7 @@ import java.util.Map;
  *   We will fix this error in the next step.
  */
 
+@Service
 public class JdbcRestaurantRepository implements RestaurantRepository {
 
 	private DataSource dataSource;
@@ -59,7 +54,7 @@ public class JdbcRestaurantRepository implements RestaurantRepository {
 	 * restaurants. When the instance of JdbcRestaurantRepository is created, a
 	 * Restaurant cache is populated for read only access
 	 */
-
+	@Autowired
 	public JdbcRestaurantRepository(DataSource dataSource) {
 		this.dataSource = dataSource;
 		this.populateRestaurantCache();
@@ -137,11 +132,9 @@ public class JdbcRestaurantRepository implements RestaurantRepository {
 	/**
 	 * Helper method that simply queries the cache of restaurants.
 	 *
-	 * @param merchantNumber
-	 *            the restaurant's merchant number
+	 * @param merchantNumber the restaurant's merchant number
 	 * @return the restaurant
-	 * @throws EmptyResultDataAccessException
-	 *             if no restaurant was found with that merchant number
+	 * @throws EmptyResultDataAccessException if no restaurant was found with that merchant number
 	 */
 	private Restaurant queryRestaurantCache(String merchantNumber) {
 		Restaurant restaurant = restaurantCache.get(merchantNumber);
@@ -154,10 +147,10 @@ public class JdbcRestaurantRepository implements RestaurantRepository {
 	/**
 	 * Helper method that clears the cache of restaurants.
 	 * This method should be called when a bean is destroyed.
-	 *
+	 * <p>
 	 * TODO-10: Add a scheme to check if this method is being invoked
 	 * - Add System.out.println to this method.
-	 *
+	 * <p>
 	 * TODO-11: Have this method to be invoked before a bean gets destroyed
 	 * - Re-run RewardNetworkTests.
 	 * - Observe this method is not called.
@@ -173,8 +166,7 @@ public class JdbcRestaurantRepository implements RestaurantRepository {
 	/**
 	 * Maps a row returned from a query of T_RESTAURANT to a Restaurant object.
 	 *
-	 * @param rs
-	 *            the result set with its cursor positioned at the current row
+	 * @param rs the result set with its cursor positioned at the current row
 	 */
 	private Restaurant mapRestaurant(ResultSet rs) throws SQLException {
 		// get the row column data
