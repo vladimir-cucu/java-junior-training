@@ -3,7 +3,7 @@ package rewards.internal.restaurant;
 import common.money.Percentage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -22,7 +22,7 @@ import java.util.Map;
  * cache should be populated on initialization and cleared on destruction.
  */
 
-@Service
+@Repository
 public class JdbcRestaurantRepository implements RestaurantRepository {
 
 	private DataSource dataSource;

@@ -2,7 +2,7 @@ package rewards.internal.reward;
 
 import common.datetime.SimpleDate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import rewards.AccountContribution;
 import rewards.Dining;
 import rewards.RewardConfirmation;
@@ -16,7 +16,7 @@ import java.sql.*;
  * inserting a reward confirmation record.
  */
 
-@Service
+@Repository
 public class JdbcRewardRepository implements RewardRepository {
 
 	private DataSource dataSource;
