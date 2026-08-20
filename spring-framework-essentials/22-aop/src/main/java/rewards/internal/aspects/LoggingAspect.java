@@ -42,7 +42,7 @@ public class LoggingAspect {
 		String name = createJoinPointTraceName(repositoryMethod);
 		Monitor monitor = monitorFactory.start(name);
 		try {
-			return  repositoryMethod.proceed();
+			return repositoryMethod.proceed();
 		} finally {
 			monitor.stop();
 			// Do not modify this log message or the test will fail
