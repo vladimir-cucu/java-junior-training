@@ -15,25 +15,6 @@ import static org.junit.jupiter.api.Assertions.*;
  * application for use in a test environment.
  */
 
-/*
-/* TODO-05: Assign beans to the "local" profile
- * - Go to corresponding step in TestInfrastructureLocalConfig class.
- */
-
-/* TODO-06: Use "jdbc" and "local" as active profiles
- * - Now that the bean 'dataSource' is specific to the local profile, should we expect
- * 	 this test to be successful?
- * - Make the appropriate changes so the current test uses 2 profiles ('jdbc' and 'local').
- * - Rerun the test, it should pass.
- */
-
-/* TODO-07: Use "jdbc" and "jndi" as active profiles
- * - Open TestInfrastructureJndiConfig and note the different datasource that will be
- * 	 used if the profile = 'jndi'.
- * - Now update the current test so it uses profiles 'jdbc' and 'jndi'.
- * - Rerun the test, it should pass.
- */
-
 /* TODO-08 (Optional): Create an inner static class from TestInfrastructureConfig
  * - Once inner static class is created, remove configuration
  *   class reference to TestInfrastructureConfig class from the annotation
@@ -43,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 
 @SpringJUnitConfig(TestInfrastructureConfig.class)
-@ActiveProfiles("jdbc")
+@ActiveProfiles({ "jdbc", "local" })
 public class RewardNetworkTests {
 
 	/**
