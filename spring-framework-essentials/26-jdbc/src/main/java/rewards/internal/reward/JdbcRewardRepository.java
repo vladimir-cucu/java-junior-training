@@ -14,19 +14,12 @@ import java.sql.*;
  * of a reward transaction by inserting a reward confirmation record.
  */
 
-// TODO-08 (Optional) : Inject JdbcTemplate directly to this repository class
-// - Refactor the constructor to get the JdbcTemplate injected directly
-//   (instead of DataSource getting injected)
-// - Refactor RewardsConfig accordingly
-// - Refactor JdbcRewardRepositoryTests accordingly
-// - Run JdbcRewardRepositoryTests and verity it passes
-
 public class JdbcRewardRepository implements RewardRepository {
 
 	private JdbcTemplate jdbcTemplate;
 
-	public JdbcRewardRepository(DataSource dataSource) {
-		jdbcTemplate = new JdbcTemplate(dataSource);
+	public JdbcRewardRepository(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
 	}
 
 	public RewardConfirmation confirmReward(AccountContribution contribution, Dining dining) {
