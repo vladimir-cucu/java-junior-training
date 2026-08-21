@@ -6,7 +6,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -14,19 +13,12 @@ import java.sql.SQLException;
  * Loads accounts from a data source using the JDBC API.
  */
 
-// TODO-10 (Optional) : Inject JdbcTemplate directly to this repository class
-// - Refactor the constructor to get the JdbcTemplate injected directly
-//   (instead of DataSource getting injected)
-// - Refactor RewardsConfig accordingly
-// - Refactor JdbcAccountRepositoryTests accordingly
-// - Run JdbcAccountRepositoryTests and verity it passes
-
 public class JdbcAccountRepository implements AccountRepository {
 
-	private JdbcTemplate jdbcTemplate;
+	final private JdbcTemplate jdbcTemplate;
 
-	public JdbcAccountRepository(DataSource dataSource) {
-		jdbcTemplate = new JdbcTemplate(dataSource);
+	public JdbcAccountRepository(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
 	}
 
 	public Account findByCreditCard(String creditCardNumber) {
