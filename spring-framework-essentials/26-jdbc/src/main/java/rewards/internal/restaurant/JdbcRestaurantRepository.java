@@ -2,6 +2,7 @@ package rewards.internal.restaurant;
 
 import common.money.Percentage;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import rewards.Dining;
 import rewards.internal.account.Account;
 
@@ -22,48 +23,23 @@ import java.sql.SQLException;
 // - Refactor JdbcRestaurantRepositoryTests accordingly
 // - Run JdbcRestaurantRepositoryTests and verity it passes
 
-// TODO-04: Refactor the cumbersome low-level JDBC code to use JdbcTemplate.
-// - Run JdbcRestaurantRepositoryTests and verity it passes
-// - Add a field of type JdbcTemplate
-// - Refactor the code in the constructor to instantiate JdbcTemplate object
-//   from the given DataSource object
-// - Refactor findByMerchantNumber(..) to use the JdbcTemplate and a RowMapper
-//
-//   #1: Create a RowMapper object and pass it to the
-//       jdbcTemplate.queryForObject(..) method as an argument
-//	 #2: The mapRestaurant(..) method provided in this class contains
-//	     logic, which the RowMapper may wish to use
-//
-// - Run JdbcRestaurantRepositoryTests again and verity it passes
-
 public class JdbcRestaurantRepository implements RestaurantRepository {
 
-	private DataSource dataSource;
+	private JdbcTemplate jdbcTemplate;
 
 	public JdbcRestaurantRepository(DataSource dataSource) {
-		this.dataSource = dataSource;
+		jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
 	public Restaurant findByMerchantNumber(String merchantNumber) {
 		String sql = "select MERCHANT_NUMBER, NAME, BENEFIT_PERCENTAGE, BENEFIT_AVAILABILITY_POLICY"
 				+ " from T_RESTAURANT where MERCHANT_NUMBER = ?";
-		Restaurant restaurant = null;
-
-		try (Connection conn = dataSource.getConnection();
-			 PreparedStatement ps = conn.prepareStatement(sql) ){
-			ps.setString(1, merchantNumber);
-			ResultSet rs = ps.executeQuery();
-			advanceToNextRow(rs);
-			restaurant = mapRestaurant(rs);
-		} catch (SQLException e) {
-			throw new RuntimeException("SQL exception occurred finding by merchant number", e);
-		}
-
-		return restaurant;
+		return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> mapRestaurant(rs), merchantNumber);
 	}
 
 	/**
 	 * Maps a row returned from a query of T_RESTAURANT to a Restaurant object.
+	 *
 	 * @param rs the result set with its cursor positioned at the current row
 	 */
 	private Restaurant mapRestaurant(ResultSet rs) throws SQLException {
@@ -81,6 +57,7 @@ public class JdbcRestaurantRepository implements RestaurantRepository {
 
 	/**
 	 * Advances a ResultSet to the next row and throws an exception if there are no rows.
+	 *
 	 * @param rs the ResultSet to advance
 	 * @throws EmptyResultDataAccessException if there is no next row
 	 * @throws SQLException
@@ -96,11 +73,11 @@ public class JdbcRestaurantRepository implements RestaurantRepository {
 	 * {@link BenefitAvailabilityPolicy} object. The key column is 'BENEFIT_AVAILABILITY_POLICY', which is a
 	 * discriminator column containing a string code that identifies the type of policy. Currently supported types are:
 	 * 'A' for 'always available' and 'N' for 'never available'.
-	 *
+	 * <p>
 	 * More types could be added easily by enhancing this method. For example, 'W' for 'Weekdays only' or 'M' for 'Max
 	 * Rewards per Month'. Some of these types might require additional database column values to be configured, for
 	 * example a 'MAX_REWARDS_PER_MONTH' data column.
-	 * 
+	 *
 	 * @param rs the result set used to map the policy object from database column values
 	 * @return the matching benefit availability policy
 	 * @throws IllegalArgumentException if the mapping could not be performed
