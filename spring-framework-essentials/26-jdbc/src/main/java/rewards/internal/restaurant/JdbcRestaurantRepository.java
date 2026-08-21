@@ -1,7 +1,6 @@
 package rewards.internal.restaurant;
 
 import common.money.Percentage;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import rewards.Dining;
 import rewards.internal.account.Account;
@@ -43,19 +42,6 @@ public class JdbcRestaurantRepository implements RestaurantRepository {
 		restaurant.setBenefitPercentage(benefitPercentage);
 		restaurant.setBenefitAvailabilityPolicy(mapBenefitAvailabilityPolicy(rs));
 		return restaurant;
-	}
-
-	/**
-	 * Advances a ResultSet to the next row and throws an exception if there are no rows.
-	 *
-	 * @param rs the ResultSet to advance
-	 * @throws EmptyResultDataAccessException if there is no next row
-	 * @throws SQLException
-	 */
-	private void advanceToNextRow(ResultSet rs) throws EmptyResultDataAccessException, SQLException {
-		if (!rs.next()) {
-			throw new EmptyResultDataAccessException(1);
-		}
 	}
 
 	/**

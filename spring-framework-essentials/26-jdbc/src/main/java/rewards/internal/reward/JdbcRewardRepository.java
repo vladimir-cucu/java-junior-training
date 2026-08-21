@@ -6,7 +6,6 @@ import rewards.AccountContribution;
 import rewards.Dining;
 import rewards.RewardConfirmation;
 
-import javax.sql.DataSource;
 import java.sql.*;
 
 /**
@@ -16,7 +15,7 @@ import java.sql.*;
 
 public class JdbcRewardRepository implements RewardRepository {
 
-	private JdbcTemplate jdbcTemplate;
+	final private JdbcTemplate jdbcTemplate;
 
 	public JdbcRewardRepository(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
