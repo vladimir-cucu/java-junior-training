@@ -42,7 +42,7 @@ public class RewardsConfig {
 
 	@Bean
 	public RestaurantRepository restaurantRepository() {
-		return new JdbcRestaurantRepository(dataSource);
+		return new JdbcRestaurantRepository(jdbcTemplate());
 	}
 
 	@Bean
