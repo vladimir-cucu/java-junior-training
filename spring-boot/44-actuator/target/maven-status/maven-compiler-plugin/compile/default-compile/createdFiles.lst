@@ -1,5 +1,0 @@
-accounts\web\AccountController.class
-accounts\web\RestaurantHealthCheck.class
-accounts\ActuatorApplication.class
-accounts\web\AccountAspect.class
-accounts\web\ActuatorSecurityConfiguration.class
