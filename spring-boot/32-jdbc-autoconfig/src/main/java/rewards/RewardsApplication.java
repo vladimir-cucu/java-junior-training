@@ -2,12 +2,12 @@ package rewards;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
-
-// TODO-03 : Turn this 'RewardsApplication' into a Spring Boot application
-// - Add an appropriate annotation to this class
-
-// --------------------------------------------
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 // TODO-11 (Optional) : Disable 'DataSource' auto-configuration
 // - Note that you are using your own 'DataSource' bean now
@@ -23,6 +23,8 @@ import org.springframework.boot.SpringApplication;
 // TODO-13 (Optional) : Follow the instruction in the lab document.
 //           The section titled "Build and Run using Command Line tools".
 
+@SpringBootApplication
+@EnableConfigurationProperties(RewardsRecipientProperties.class)
 public class RewardsApplication {
     static final String SQL = "SELECT count(*) FROM T_ACCOUNT";
 
@@ -33,17 +35,21 @@ public class RewardsApplication {
         SpringApplication.run(RewardsApplication.class, args);
     }
 
-    // TODO-04 : Let Spring Boot execute database scripts
-    // - Move the SQL scripts (schema.sql and data.sql)
-    //   from `src/test/resources/rewards/testdb` directory
-    //   to `src/main/resources/` directory
+    @Bean
+    CommandLineRunner displayNumberOfAccounts(JdbcTemplate jdbcTemplate) {
+        final String query = "SELECT COUNT(*) FROM T_ACCOUNT";
+        final int numberOfAccounts = jdbcTemplate.queryForObject(query, Integer.class);
+        return args -> {
+            logger.info("Number of accounts: {}", numberOfAccounts);
+        };
+    }
 
-    // TODO-05 : Implement a command line runner that will query count from
-    //           T_ACCOUNT table and log the count to the console
-    // - Use the SQL query and logger provided above.
-    // - Use the JdbcTemplate bean that Spring Boot auto-configured for you
-    // - Run this application and verify "Hello, there are 21 accounts" log message
-    //   gets displayed in the console
+    @Bean
+    CommandLineRunner displayNameOfRewardsRecipient(RewardsRecipientProperties rewardsRecipientProperties) {
+        return args -> {
+            logger.info("Rewards recipient: {}", rewardsRecipientProperties.getName());
+        };
+    }
 
     // TODO-07 (Optional): Enable full debugging in order to observe how Spring Boot
     //           performs its auto-configuration logic
