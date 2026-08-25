@@ -13,19 +13,12 @@ import java.util.Set;
 /**
  * An account for a member of the reward network. An account has one or more
  * beneficiaries whose allocations must add up to 100%.
- * 
+ * <p>
  * An account can make contributions to its beneficiaries. Each contribution is
  * distributed among the beneficiaries based on an allocation.
- * 
+ * <p>
  * An entity. An aggregate.
  */
-//	TODO-02: Review the JPA annotations on this class and make sure you know what each does.
-//	@Entity - Marks this class as a JPA persistent class
-//	@Table - Specifies the exact table name to use on the DB (would be "Account" if unspecified).
-//	@Id - Indicates the field to use as the primary key on the database
-//	@Column - Identifies column-level customization, such as the exact name of the column on the table.
-//	@OneToMany - Identifies the field on the 'one' side of a one to many relationship.
-//	@JoinColumn - Identifies the column on the 'many' table containing the column to be used when joining.  Usually a foreign key.
 @Entity
 @Table(name = "T_ACCOUNT")
 public class Account {
@@ -52,7 +45,7 @@ public class Account {
 
 	/**
 	 * Create a new account.
-	 * 
+	 *
 	 * @param number the account number
 	 * @param name   the name on the account
 	 */
@@ -63,7 +56,7 @@ public class Account {
 
 	/**
 	 * Getter for the credit card number for this account.
-	 * 
+	 *
 	 * @return the credit card number for this account as a 16-character String.
 	 */
 	public String getCreditCardNumber() {
@@ -72,8 +65,8 @@ public class Account {
 
 	/**
 	 * Setter for the credit card number for this account.
-	 * 
-	 * @param creditCardNumber
+	 *
+	 * @param creditCardNumber the credit card number
 	 */
 	public void setCreditCardNumber(String creditCardNumber) {
 		this.creditCardNumber = creditCardNumber;
@@ -109,7 +102,7 @@ public class Account {
 
 	/**
 	 * Add a single beneficiary with a 100% allocation percentage.
-	 * 
+	 *
 	 * @param beneficiaryName the name of the beneficiary (should be unique)
 	 */
 	public void addBeneficiary(String beneficiaryName) {
@@ -118,7 +111,7 @@ public class Account {
 
 	/**
 	 * Add a single beneficiary with the specified allocation percentage.
-	 * 
+	 *
 	 * @param beneficiaryName      the name of the beneficiary (should be unique)
 	 * @param allocationPercentage the beneficiary's allocation percentage within
 	 *                             this account
@@ -152,8 +145,8 @@ public class Account {
 	 * Make a monetary contribution to this account. The contribution amount is
 	 * distributed among the account's beneficiaries based on each beneficiary's
 	 * allocation percentage.
-	 * 
-	 * @param amount       the total amount to contribute
+	 *
+	 * @param amount the total amount to contribute
 	 */
 	public AccountContribution makeContribution(MonetaryAmount amount) {
 		if (!isValid()) {
@@ -166,7 +159,7 @@ public class Account {
 
 	/**
 	 * Distribute the contribution amount among this account's beneficiaries.
-	 * 
+	 *
 	 * @param amount the total contribution amount
 	 * @return the individual beneficiary distributions
 	 */
@@ -186,7 +179,7 @@ public class Account {
 	 * Returns the beneficiaries for this account. Callers should not attempt to
 	 * hold on or modify the returned set. This method should only be used
 	 * transitively; for example, called to facilitate account reporting.
-	 * 
+	 *
 	 * @return the beneficiaries of this account
 	 */
 	public Set<Beneficiary> getBeneficiaries() {
@@ -197,7 +190,7 @@ public class Account {
 	 * Returns a single account beneficiary. Callers should not attempt to hold on
 	 * or modify the returned object. This method should only be used transitively;
 	 * for example, called to facilitate reporting or testing.
-	 * 
+	 *
 	 * @param name the name of the beneficiary e.g "Annabelle"
 	 * @return the beneficiary object
 	 */
@@ -213,7 +206,7 @@ public class Account {
 	/**
 	 * Used to restore an allocated beneficiary. Should only be called by the
 	 * repository responsible for reconstituting this account.
-	 * 
+	 *
 	 * @param beneficiary the beneficiary
 	 */
 	void restoreBeneficiary(Beneficiary beneficiary) {
