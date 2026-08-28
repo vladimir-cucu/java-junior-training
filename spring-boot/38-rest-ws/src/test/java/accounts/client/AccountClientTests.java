@@ -1,7 +1,6 @@
 package accounts.client;
 
 import common.money.Percentage;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
@@ -10,7 +9,6 @@ import rewards.internal.account.Account;
 import rewards.internal.account.Beneficiary;
 
 import java.net.URI;
-import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,7 +17,6 @@ public class AccountClientTests {
 	private static final String BASE_URL = "http://localhost:8080";
 
 	private RestTemplate restTemplate = new RestTemplate();
-	private Random random = new Random();
 
 	@Test
 	public void listAccounts() {
@@ -44,8 +41,7 @@ public class AccountClientTests {
 
 	@Test
 	public void createAccount() {
-		// Use a unique number to avoid conflicts
-		String number = String.format("12345%4d", random.nextInt(10000));
+		String number = "123123123";
 		Account account = new Account(number, "John Doe");
 		account.addBeneficiary("Jane Doe");
 
