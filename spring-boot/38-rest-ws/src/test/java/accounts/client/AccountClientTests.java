@@ -9,6 +9,7 @@ import rewards.internal.account.Account;
 import rewards.internal.account.Beneficiary;
 
 import java.net.URI;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,6 +18,7 @@ public class AccountClientTests {
 	private static final String BASE_URL = "http://localhost:8080";
 
 	private RestTemplate restTemplate = new RestTemplate();
+	private Random random = new Random();
 
 	@Test
 	public void listAccounts() {
@@ -41,7 +43,8 @@ public class AccountClientTests {
 
 	@Test
 	public void createAccount() {
-		String number = "123123123";
+		// Use a unique number to avoid conflicts
+		String number = String.format("12345%4d", random.nextInt(10000));
 		Account account = new Account(number, "John Doe");
 		account.addBeneficiary("Jane Doe");
 
@@ -56,6 +59,19 @@ public class AccountClientTests {
 
 		assertEquals(accountBeneficiary.getName(), retrievedAccountBeneficiary.getName());
 		assertNotNull(retrievedAccount.getEntityId());
+	}
+	
+	@Test
+	public void createAccountWithSameNumber() {
+		String number = "123123123";
+		Account account = new Account(number, "John Doe");
+		
+		restTemplate.postForLocation(BASE_URL + "/accounts", account);
+
+		HttpClientErrorException httpClientErrorException = assertThrows(HttpClientErrorException.class, () -> {
+			restTemplate.postForLocation(BASE_URL + "/accounts", account);
+		});
+		assertEquals(HttpStatus.CONFLICT, httpClientErrorException.getStatusCode());
 	}
 
 	@Test
