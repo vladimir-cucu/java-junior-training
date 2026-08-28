@@ -1,6 +1,7 @@
 package accounts.internal;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -42,17 +43,7 @@ public class JpaAccountManager extends AbstractAccountManager {
 	public List<Account> getAllAccounts() {
 		List<Account> l = entityManager.createQuery("select a from Account a LEFT JOIN FETCH a.beneficiaries")
 				.getResultList();
-
-		// Use of "JOIN FETCH" produces duplicate accounts, and DISTINCT does
-		// not address this. So we have to filter it manually.
-		List<Account> result = new ArrayList<Account>();
-
-		for (Account a : l) {
-			if (!result.contains(a))
-				result.add(a);
-		}
-
-		return result;
+		return new ArrayList<>(new LinkedHashSet<>(l));
 	}
 
 	@Override
