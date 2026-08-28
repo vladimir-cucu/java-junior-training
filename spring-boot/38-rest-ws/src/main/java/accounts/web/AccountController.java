@@ -36,11 +36,6 @@ public class AccountController {
 	/**
 	 * Provide a list of all accounts.
 	 */
-	// TODO-02: Review the code that performs the following
-	// a. Respond to GET /accounts
-    // b. Return a List<Account> to be converted to the response body
-	// - Access http://localhost:8080/accounts using a browser or curl
-	//   and verify that you see the list of accounts in JSON format.
 	@GetMapping(value = "/accounts")
 	public List<Account> accountSummary() {
 		return accountManager.getAllAccounts();
@@ -60,7 +55,7 @@ public class AccountController {
 	 */
 	// TODO-06: Complete this method. Add annotations to:
 	// a. Respond to POST /accounts requests
-    // b. Use a proper annotation for creating an Account object from the request
+	// b. Use a proper annotation for creating an Account object from the request
 	public ResponseEntity<Void> createAccount(Account newAccount) {
 		// Saving the account also sets its entity Id
 		Account account = accountManager.save(newAccount);
@@ -71,12 +66,12 @@ public class AccountController {
 	}
 
 	/**
-	 * Return a response with the location of the new resource. 
-	 *
+	 * Return a response with the location of the new resource.
+	 * <p>
 	 * Suppose we have just received an incoming URL of, say,
-	 *   http://localhost:8080/accounts and resourceId is "1111".
+	 * http://localhost:8080/accounts and resourceId is "1111".
 	 * Then the URL of the new resource will be
-	 *   http://localhost:8080/accounts/1111.
+	 * http://localhost:8080/accounts/1111.
 	 */
 	private ResponseEntity<Void> entityWithLocation(Object resourceId) {
 
@@ -108,12 +103,12 @@ public class AccountController {
 	// b. Extract a beneficiary name from the incoming request
 	// c. Indicate a "201 Created" status
 	public ResponseEntity<Void> addBeneficiary(long accountId, String beneficiaryName) {
-		
+
 		// TODO-11: Create a ResponseEntity containing the location of the newly
 		// created beneficiary.
 		// a. Use accountManager's addBeneficiary method to add a beneficiary to an account
 		// b. Use the entityWithLocation method - like we did for createAccount().
-		
+
 		return null;  // Modify this to return something
 	}
 
@@ -147,7 +142,7 @@ public class AccountController {
 	 * Maps IllegalArgumentExceptions to a 404 Not Found HTTP status code.
 	 */
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	@ExceptionHandler({ IllegalArgumentException.class })
+	@ExceptionHandler({IllegalArgumentException.class})
 	public void handleNotFound(Exception ex) {
 		logger.error("Exception is: ", ex);
 		// just return empty 404
@@ -157,7 +152,7 @@ public class AccountController {
 	// - It should map DataIntegrityViolationException to a 409 Conflict status code.
 	// - Use the handleNotFound method above for guidance.
 	// - Consult the lab document for further instruction
-	
+
 	/**
 	 * Finds the Account with the given id, throwing an IllegalArgumentException
 	 * if there is no such Account.
