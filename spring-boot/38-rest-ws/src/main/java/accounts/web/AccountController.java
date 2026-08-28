@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import rewards.internal.account.Account;
 import rewards.internal.account.Beneficiary;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 
@@ -53,10 +55,8 @@ public class AccountController {
 	 * Creates a new Account, setting its URL as the Location header on the
 	 * response.
 	 */
-	// TODO-06: Complete this method. Add annotations to:
-	// a. Respond to POST /accounts requests
-	// b. Use a proper annotation for creating an Account object from the request
-	public ResponseEntity<Void> createAccount(Account newAccount) {
+	@PostMapping("/accounts")
+	public ResponseEntity<Void> createAccount(@RequestBody Account newAccount) {
 		// Saving the account also sets its entity Id
 		Account account = accountManager.save(newAccount);
 
@@ -74,14 +74,12 @@ public class AccountController {
 	 * http://localhost:8080/accounts/1111.
 	 */
 	private ResponseEntity<Void> entityWithLocation(Object resourceId) {
-
-		// TODO-07: Set the 'location' header on a Response to URI of
-		//          the newly created resource and return it.
-		// a. You will need to use 'ServletUriComponentsBuilder' and
-		//     'ResponseEntity' to implement this - Use ResponseEntity.created(..)
-		// b. Refer to the POST example in the slides for more information
-
-		return null; // Return something other than null
+		URI location = ServletUriComponentsBuilder
+				.fromCurrentRequestUri()
+				.path("/{resourceId}")
+				.buildAndExpand(resourceId)
+				.toUri();
+		return ResponseEntity.created(location).build();
 	}
 
 	/**
