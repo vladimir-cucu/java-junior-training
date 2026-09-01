@@ -14,6 +14,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AccountController.class)
@@ -50,30 +51,21 @@ public class AccountControllerBootTests {
 		verify(accountManager).getAccount(any(Long.class));
 	}
 
-	// TODO-12: Write test for `POST` request for an account
-	// - Uncomment Java code below
-	// - Write code between the "given" and "verify" statements
-	// - Run the test and verify it succeeds
 	@Test
 	public void createAccount() throws Exception {
+		Account testAccount = new Account("1234512345", "Mary Jones");
+		testAccount.setEntityId(21L);
 
-		//Account testAccount = new Account("1234512345", "Mary Jones");
-		//testAccount.setEntityId(21L);
+		given(accountManager.save(any(Account.class)))
+				.willReturn(testAccount);
 
-		//given(accountManager.save(any(Account.class)))
-		//		.willReturn(testAccount);
+		mockMvc.perform(post("/accounts")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(asJsonString(testAccount)))
+				.andExpect(status().isCreated())
+				.andExpect(header().string("Location", "http://localhost/accounts/21"));
 
-		// (Write code here)
-		// Use mockMvc to perform HTTP Post operation to "/accounts"
-		// - Set the request content type to APPLICATION_JSON
-		// - Set the request content with Json string of the "testAccount"
-		//   (Use "asJsonString" method below to convert the "testAccount"
-		//   object into Json string)
-		// - Verify that the response status is 201
-		// - Verify that the response "Location" header contains "http://localhost/accounts/21"
-
-		//verify(accountManager).save(any(Account.class));
-
+		verify(accountManager).save(any(Account.class));
 	}
 
 	// Utility class for converting an object into JSON string
@@ -86,10 +78,4 @@ public class AccountControllerBootTests {
 			throw new RuntimeException(e);
 		}
 	}
-
-	// TODO-13 (Optional): Experiment with @MockBean vs @Mock
-	// - Change `@MockBean` to `@Mock` for the `AccountManager dependency above
-	// - Run the test and observe a test failure
-	// - Change it back to `@MockBean`
-
 }
