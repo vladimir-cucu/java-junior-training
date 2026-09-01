@@ -1,43 +1,41 @@
 package accounts.web;
 
+import accounts.AccountManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import rewards.internal.account.Account;
 
-// TODO-06: Get yourself familiarized with various testing utility classes
-// - Uncomment the import statements below
-//import static org.mockito.ArgumentMatchers.any;
-//import static org.mockito.BDDMockito.*;
-//import static org.mockito.Mockito.verify;
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-// TODO-07: Replace @ExtendWith(SpringExtension.class) with the following annotation
-// - @WebMvcTest(AccountController.class) // includes @ExtendWith(SpringExtension.class)
-@ExtendWith(SpringExtension.class)
+@WebMvcTest(AccountController.class)
 public class AccountControllerBootTests {
 
-	// TODO-08: Autowire MockMvc bean
+	@Autowired
+	private MockMvc mockMvc;
 
-	// TODO-09: Create AccountManager mock bean using @MockBean annotation
+	@MockBean
+	private AccountManager accountManager;
 
-	// TODO-10: Write positive test for GET request for an account
-	// - Uncomment the code and run the test and verify it succeeds
 	@Test
 	public void accountDetails() throws Exception {
+		given(accountManager.getAccount(0L))
+				.willReturn(new Account("1234567890", "John Doe"));
 
-		//given(accountManager.getAccount(0L))
-		//		.willReturn(new Account("1234567890", "John Doe"));
+		mockMvc.perform(get("/accounts/0"))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("name").value("John Doe"))
+				.andExpect(jsonPath("number").value("1234567890"));
 
-		//mockMvc.perform(get("/accounts/0"))
-		//	   .andExpect(status().isOk())
-		//	   .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-		//	   .andExpect(jsonPath("name").value("John Doe"))
-		//	   .andExpect(jsonPath("number").value("1234567890"));
-
-		//verify(accountManager).getAccount(0L);
-
+		verify(accountManager).getAccount(0L);
 	}
 
 	// TODO-11: Write negative test for GET request for a non-existent account
@@ -52,14 +50,14 @@ public class AccountControllerBootTests {
 
 		// (Write code here)
 		// - Use mockMvc to perform HTTP Get operation using "/accounts/9999"
-        //   as a non-existent account URL
+		//   as a non-existent account URL
 		// - Verify that the HTTP response status is 404
 
 		//verify(accountManager).getAccount(any(Long.class));
 
 	}
 
-    // TODO-12: Write test for `POST` request for an account
+	// TODO-12: Write test for `POST` request for an account
 	// - Uncomment Java code below
 	// - Write code between the "given" and "verify" statements
 	// - Run the test and verify it succeeds
@@ -85,7 +83,7 @@ public class AccountControllerBootTests {
 
 	}
 
-    // Utility class for converting an object into JSON string
+	// Utility class for converting an object into JSON string
 	protected static String asJsonString(final Object obj) {
 		try {
 			final ObjectMapper mapper = new ObjectMapper();
