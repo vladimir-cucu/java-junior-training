@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import rewards.internal.account.Account;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -38,23 +39,15 @@ public class AccountControllerBootTests {
 		verify(accountManager).getAccount(0L);
 	}
 
-	// TODO-11: Write negative test for GET request for a non-existent account
-	// - Uncomment the "given" and "verify" statements
-	// - Write code between the "given" and "verify" statements
-	// - Run the test and verify it succeeds
 	@Test
 	public void accountDetailsFail() throws Exception {
+		given(accountManager.getAccount(any(Long.class)))
+				.willThrow(new IllegalArgumentException("No such account with id " + 0L));
 
-		//given(accountManager.getAccount(any(Long.class)))
-		//		.willThrow(new IllegalArgumentException("No such account with id " + 0L));
+		mockMvc.perform(get("/accounts/9999"))
+				.andExpect(status().isNotFound());
 
-		// (Write code here)
-		// - Use mockMvc to perform HTTP Get operation using "/accounts/9999"
-		//   as a non-existent account URL
-		// - Verify that the HTTP response status is 404
-
-		//verify(accountManager).getAccount(any(Long.class));
-
+		verify(accountManager).getAccount(any(Long.class));
 	}
 
 	// TODO-12: Write test for `POST` request for an account
