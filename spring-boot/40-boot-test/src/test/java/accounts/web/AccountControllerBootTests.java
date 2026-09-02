@@ -10,6 +10,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import rewards.internal.account.Account;
 
+import java.util.List;
+
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -66,6 +69,23 @@ public class AccountControllerBootTests {
 				.andExpect(header().string("Location", "http://localhost/accounts/21"));
 
 		verify(accountManager).save(any(Account.class));
+	}
+
+	@Test
+	public void shouldReturnAccounts() throws Exception {
+		given(accountManager.getAllAccounts())
+				.willReturn(List.of(new Account("1234567890", "John Doe"), new Account("1234512345", "Mary Jones")));
+
+		mockMvc.perform(get("/accounts"))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$", hasSize(2)))
+				.andExpect(jsonPath("$[0].name").value("John Doe"))
+				.andExpect(jsonPath("$[0].number").value("1234567890"))
+				.andExpect(jsonPath("$[1].name").value("Mary Jones"))
+				.andExpect(jsonPath("$[1].number").value("1234512345"));
+
+		verify(accountManager).getAllAccounts();
 	}
 
 	// Utility class for converting an object into JSON string
