@@ -52,7 +52,7 @@ public class AccountControllerBootTests {
 		mockMvc.perform(get("/accounts/9999"))
 				.andExpect(status().isNotFound());
 
-		verify(accountManager).getAccount(any(Long.class));
+		verify(accountManager).getAccount(9999L);
 	}
 
 	@Test
@@ -69,7 +69,7 @@ public class AccountControllerBootTests {
 				.andExpect(status().isCreated())
 				.andExpect(header().string("Location", "http://localhost/accounts/21"));
 
-		verify(accountManager).save(any(Account.class));
+		verify(accountManager).save(testAccount);
 	}
 
 	@Test
