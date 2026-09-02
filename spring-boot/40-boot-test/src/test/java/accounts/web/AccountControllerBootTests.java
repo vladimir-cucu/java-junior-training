@@ -2,6 +2,7 @@ package accounts.web;
 
 import accounts.AccountManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import common.money.Percentage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -86,6 +87,24 @@ public class AccountControllerBootTests {
 				.andExpect(jsonPath("$[1].number").value("1234512345"));
 
 		verify(accountManager).getAllAccounts();
+	}
+
+	@Test
+	public void shouldReturnValidBeneficiaryForAnAccount() throws Exception {
+		Account testAccount = new Account("1234512345", "Mary Jones");
+		testAccount.addBeneficiary("John Doe", new Percentage(0.5));
+
+		given(accountManager.getAccount(0L))
+				.willReturn(testAccount);
+
+		mockMvc.perform(get("/accounts/0"))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.beneficiaries", hasSize(1)))
+				.andExpect(jsonPath("$.beneficiaries[0].name").value("John Doe"))
+				.andExpect(jsonPath("$.beneficiaries[0].allocationPercentage").value(0.50));
+
+		verify(accountManager).getAccount(0L);
 	}
 
 	// Utility class for converting an object into JSON string
