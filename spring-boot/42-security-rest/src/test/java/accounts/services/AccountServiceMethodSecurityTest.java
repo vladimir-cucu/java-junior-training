@@ -31,8 +31,8 @@ class AccountServiceMethodSecurityTest {
         String[] authorities = restTemplate.withBasicAuth("admin", "admin")
                                            .getForObject("/authorities?username=admin", String[].class);
         assertThat(authorities.length).isEqualTo(2);
-        assertThat(authorities.toString().contains("ROLE_ADMIN"));
-        assertThat(authorities.toString().contains("ROLE_USER"));
+        assertThat(authorities).contains("ROLE_ADMIN");
+        assertThat(authorities).contains("ROLE_USER");
 
     }
 
