@@ -1,18 +1,11 @@
 package accounts.security;
 
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 
-//TODO-18b (Optional): Remove the CustomUserDetailsService definition
-// - Comment the @Component annotation added in a previous task
-
-@Component
-@Primary
 public class CustomUserDetailsService implements UserDetailsService {
 
 	private PasswordEncoder passwordEncoder;
