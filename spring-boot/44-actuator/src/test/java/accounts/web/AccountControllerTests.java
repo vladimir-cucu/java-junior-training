@@ -3,6 +3,7 @@ package accounts.web;
 import accounts.internal.StubAccountManager;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -34,10 +35,7 @@ public class AccountControllerTests {
 		counter = mock(Counter.class);
 		doReturn(counter).when(registry).counter(any(String.class), any(String.class), any(String.class));
 
-		// TODO-10: Fix compiler error
-		// - This constructor needs to pass MeterRegistry object as well
-		// - Run the tests (except the @Disabled ones) in this test class, they should pass
-		controller = new AccountController(new StubAccountManager());
+		controller = new AccountController(new StubAccountManager(), new SimpleMeterRegistry());
 	}
 
 	@Test

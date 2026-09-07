@@ -2,6 +2,8 @@ package accounts.web;
 
 import accounts.AccountManager;
 import common.money.Percentage;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +22,6 @@ import java.util.List;
 /**
  * A controller handling requests for CRUD operations on Accounts and their
  * Beneficiaries.
- *
- * TODO-11: Access the new "/metrics/account.fetch" metric
- * - Let the application get restarted via devtools
- * - Access "/metrics" endpoint, and verify the presence of "account.fetch" metric
- * - Access some accounts (i.e. http://localhost:8080/accounts/1)
- * - View the counter value at http://localhost:8080/actuator/metrics/account.fetch
- * - Restart the application. What happens to the counter?
  */
 @RestController
 public class AccountController {
@@ -35,14 +30,12 @@ public class AccountController {
 
 	private AccountManager accountManager;
 
-	// TODO-08: Add a Micrometer Counter
-	// - Inject a MeterRegistry through constructor injection
-	//   (Modify the existing constructor below)
-	// - Create a Counter from the MeterRegistry: name the counter "account.fetch"
-	//   with a tag of "type"/"fromCode" key/value pair
+    private Counter counter;
+
 	@Autowired
-	public AccountController(AccountManager accountManager) {
+	public AccountController(AccountManager accountManager, MeterRegistry meterRegistry) {
 		this.accountManager = accountManager;
+        this.counter = meterRegistry.counter("account.fetch", "type", "fromCode");
 	}
 
 	/**
@@ -60,12 +53,6 @@ public class AccountController {
 	}
 
 	/**
-	 *
-	 *  TODO-09: Increment the Counter each time "accountDetails" method below is called.
-     *  - Add code to increment the counter
-	 *
-	 * ----------------------------------------------------
-	 *
      *  TODO-13: Add Timer metric
 	 *  - Add @Timed annotation to this method
      *  - Set the metric name to "account.timer"
@@ -73,7 +60,7 @@ public class AccountController {
 	 */
 	@GetMapping(value = "/accounts/{id}")
 	public Account accountDetails(@PathVariable int id) {
-
+        counter.increment();
 		return retrieveAccount(id);
 	}
 
