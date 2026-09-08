@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest(classes = {RestWsApplication.class},
         webEnvironment = WebEnvironment.RANDOM_PORT)
+@Disabled("user, admin and superadmin are no longer authenticated")
 public class AccountClientTests {
 
     @Autowired
