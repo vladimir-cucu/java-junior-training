@@ -35,14 +35,10 @@ public class AccountControllerTests {
 		counter = mock(Counter.class);
 		doReturn(counter).when(registry).counter(any(String.class), any(String.class), any(String.class));
 
-		controller = new AccountController(new StubAccountManager(), new SimpleMeterRegistry());
+		controller = new AccountController(new StubAccountManager(), registry);
 	}
 
 	@Test
-	// TODO-19: Test the actuator endpoints
-	// - Remove @Disabled annotation below
-	// - Run this test - it should pass
-	@Disabled
 	public void testHandleDetailsRequest() {
 		Account account = controller.accountDetails(0);
 		assertNotNull(account);
